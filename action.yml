@@ -80,37 +80,7 @@ runs:
         cd "${{ inputs.working_directory }}"
         pip install --upgrade pip
         pip install -r requirements.txt
-
-    - name: Sanity check polyapi install
-      shell: bash
-      run: |
-        cd "${{ inputs.working_directory }}"
-        python - <<'PY'
-        import sys, pkgutil, importlib.metadata as md
-        import polyapi
-        print("python:", sys.version)
-        print("polyapi-python dist version:", md.version("polyapi-python"))
-        try:
-            print("polyapi dist version:", md.version("polyapi"))
-        except Exception as e:
-            print("polyapi dist version: (not installed) ->", e)
-        print("polyapi module path:", polyapi.__file__)
-        try:
-            from polyapi import vari
-            print("from polyapi import vari -> OK")
-        except Exception as e:
-            print("from polyapi import vari -> FAIL:", repr(e))
-        try:
-            import polyapi.vari as v2
-            print("import polyapi.vari -> OK")
-        except Exception as e:
-            print("import polyapi.vari -> FAIL:", repr(e))
-        try:
-            import os
-            print("polyapi submodules:", [m.name for m in pkgutil.iter_modules(polyapi.__path__)])
-        except Exception as e:
-            print("iter_modules failed:", repr(e))
-        PY
+        python -m polyapi generate --no-types
 
     - name: Locate PolyAPI installation directory
       id: poly_dir
